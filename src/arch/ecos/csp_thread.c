@@ -29,6 +29,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 int csp_thread_create(csp_thread_return_t (* routine)(void *), const signed char * const thread_name, unsigned short stack_depth, void * parameters, unsigned int priority, csp_thread_handle_t * handle) {
   // Create kernel space and thread stack
   cyg_thread *thread = malloc(sizeof(cyg_thread));
+
+  // TODO: This memory assignment will not be free'd on tread destruction.
+  //       Find out if freeing the memory is needed, and make a fix for it if so.
   unsigned char *stack = malloc(sizeof(unsigned char) * [stack_depth]);
 
   // Initialize thread
