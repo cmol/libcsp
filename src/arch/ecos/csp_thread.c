@@ -32,7 +32,8 @@ int csp_thread_create(csp_thread_return_t (* routine)(void *), const signed char
 
   // TODO: This memory assignment will not be free'd on tread destruction.
   //       Find out if freeing the memory is needed, and make a fix for it if so.
-  unsigned char *stack = malloc(sizeof(unsigned char) * [stack_depth]);
+  //       The allocated memory assumes a 16-bit wide stack
+  unsigned char *stack = malloc(sizeof(unsigned char) * stack_depth * 2);
 
   // Initialize thread
   cyg_thread_create(priority, routine, (cyg_addrword_t) parameters,
