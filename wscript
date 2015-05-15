@@ -115,7 +115,7 @@ def configure(ctx):
     # Setup CFLAGS
     if (len(ctx.env.CFLAGS) == 0):
         if(ctx.options.with_os == 'ecos'):
-            ctx.env.prepend_value('CFLAGS', ['-Os','-Wall','-Wpointer-arith', '-Wstrict-prototypes', '-Wundef', '-Woverloaded-virtual', '-Wno-write-strings', '-ffunction-sections', '-fdata-sections -fno-rtti -fno-exceptions' ,'-g', '-std=gnu99','-I', ecos_install_dir+'/include'])
+            ctx.env.prepend_value('CFLAGS', ['-Os','-Wall','-Wpointer-arith', '-Wstrict-prototypes', '-Wundef', '-Wno-write-strings', '-ffunction-sections' ,'-g', '-std=gnu99','-I', ecos_install_dir+'/include'])
         else:
             ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g', '-std=gnu99'])
 
