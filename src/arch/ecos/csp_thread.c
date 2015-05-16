@@ -38,8 +38,9 @@ int csp_thread_create(csp_thread_return_t (* routine)(void *), const signed char
   // Initialize thread
   cyg_thread_create(priority, routine, (cyg_addrword_t) parameters,
     thread_name, (void *) stack, stack_depth * 2,
-    &handle, &thread)
+    &handle, &thread);
 
   // Resume thread (starts suspended)
-  return cyg_thread_resume(handle);
+  cyg_thread_resume(handle);
+  return 0;
 }
