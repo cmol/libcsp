@@ -28,7 +28,7 @@ extern "C" {
 #include <stdint.h>
 
 /* Set OS */
-#if defined(CSP_POSIX) || defined(CSP_WINDOWS) || defined(CSP_MACOSX)
+#if defined(CSP_POSIX) || defined(CSP_WINDOWS) || defined(CSP_MACOSX) || defined(CSP_ECOS)
 	#define CSP_BASE_TYPE int
 	#define CSP_MAX_DELAY (UINT32_MAX)
 	#define CSP_INFINITY (UINT32_MAX)

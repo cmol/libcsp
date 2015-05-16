@@ -80,8 +80,8 @@ def options(ctx):
 
 def configure(ctx):
 	# Validate OS
-	if not ctx.options.with_os in ('posix', 'windows', 'freertos', 'macosx'):
-		ctx.fatal('--with-os must be either \'posix\', \'windows\', \'macosx\' or \'freertos\'')
+	if not ctx.options.with_os in ('posix', 'windows', 'freertos', 'macosx', 'ecos'):
+		ctx.fatal('--with-os must be either \'posix\', \'windows\', \'macosx\', \'ecos\' or \'freertos\'')
 
 	# Validate CAN drivers
 	if not ctx.options.with_driver_can in (None, 'socketcan', 'at91sam7a1', 'at91sam7a3', 'at90can128'):
@@ -112,9 +112,19 @@ def configure(ctx):
 	if not ctx.options.disable_stlib:
 		ctx.env.FEATURES += ['cstlib']
 
+	# TODO: Quick fix for path, make an option instead
+	ecos_install_dir = '/home/cmol/DTU/34299-Fagprojekt/eCos_synth_with_exts_install'
+
 	# Setup CFLAGS
 	if (len(ctx.env.CFLAGS) == 0):
-		ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g', '-std=gnu99'])
+		if(ctx.options.with_os == 'ecos'):
+			ctx.env.prepend_value('CFLAGS', ['-Os','-Wall','-Wpointer-arith', '-Wstrict-prototypes', '-Wundef', '-Wno-write-strings', '-ffunction-sections' ,'-g', '-std=gnu99','-I', ecos_install_dir+'/include'])
+		else:
+			ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g', '-std=gnu99'])
+
+	# Setup LDFLAGS
+	if (len(ctx.env.LDFLAGS) == 0 and ctx.options.with_os == 'ecos'):
+		ctx.env.prepend_value('LDFLAGS', ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static,','-nostartfiles', '-L', ecos_install_dir+'/lib', '-T', 'target.ld'])
 
 	# Setup extra includes
 	ctx.env.append_unique('INCLUDES_CSP', ['include'] + ctx.options.includes.split(','))
@@ -131,14 +141,14 @@ def configure(ctx):
 	# Check for recursion
 	if ctx.path == ctx.srcnode:
 		ctx.options.install_csp = True
-	
+
 	# Add FreeRTOS 
 	if ctx.options.with_os == 'freertos':
 		if ctx.options.with_freertos:
 			ctx.env.append_unique('INCLUDES_CSP', ctx.options.with_freertos)
 	elif ctx.options.with_os == 'windows':
 		ctx.env.append_unique('CFLAGS', ['-D_WIN32_WINNT=0x0600'])
-	
+
 	# Store OS as env variable
 	ctx.env.append_unique('OS', ctx.options.with_os)
 
@@ -146,7 +156,8 @@ def configure(ctx):
 	ctx.define_cond('CSP_POSIX', ctx.options.with_os == 'posix')
 	ctx.define_cond('CSP_WINDOWS', ctx.options.with_os == 'windows')
 	ctx.define_cond('CSP_MACOSX', ctx.options.with_os == 'macosx')
-		
+	ctx.define_cond('CSP_ECOS', ctx.options.with_os == 'ecos')
+
 	# Add Eternal Drivers
 	if ctx.options.with_drivers:
 		ctx.env.append_unique('INCLUDES_CSP', ctx.options.with_drivers)
@@ -158,7 +169,7 @@ def configure(ctx):
 	# Add USART driver
 	if ctx.options.with_driver_usart != None:
 		ctx.env.append_unique('FILES_CSP', 'src/drivers/usart/usart_{0}.c'.format(ctx.options.with_driver_usart))
-		
+
 	# Interfaces
 	if ctx.options.enable_if_can:
 		ctx.env.append_unique('FILES_CSP', 'src/interfaces/csp_if_can.c')
@@ -174,7 +185,7 @@ def configure(ctx):
 	# Store configuration options
 	ctx.env.ENABLE_BINDINGS = ctx.options.enable_bindings
 	ctx.env.ENABLE_EXAMPLES = ctx.options.enable_examples
-	
+
 	# Create config file
 	if not ctx.options.disable_output:
 		ctx.env.append_unique('FILES_CSP', 'src/csp_debug.c')
@@ -218,7 +229,7 @@ def configure(ctx):
 	ctx.define('CSP_RDP_MAX_WINDOW', ctx.options.with_rdp_max_window)
 	ctx.define('CSP_PADDING_BYTES', ctx.options.with_padding)
 	ctx.define('CSP_TRANSACTION_SO', ctx.options.with_transaction_so)
-	
+
 	if ctx.options.with_bufalign != None:
 		ctx.define('CSP_BUFFER_ALIGN', ctx.options.with_bufalign)
 
@@ -239,7 +250,7 @@ def configure(ctx):
 	ctx.define('LIBCSP_VERSION', VERSION)
 
 	ctx.write_config_header('include/csp/csp_autoconfig.h', top=True, remove=True)
-	
+
 def build(ctx):
 
 	# Set install path for header files

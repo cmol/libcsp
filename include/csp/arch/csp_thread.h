@@ -46,6 +46,24 @@ typedef void * csp_thread_return_t;
 
 #endif // CSP_POSIX
 
+/* ECOS interface */
+#if defined(CSP_ECOS)
+
+#include <cyg/kernel/kapi.h>
+#include <unistd.h>
+
+#define csp_thread_exit() pthread_exit(NULL)
+
+typedef cyg_handle_t csp_thread_handle_t;
+typedef void * csp_thread_return_t;
+
+#define CSP_DEFINE_TASK(task_name) csp_thread_return_t task_name(void * param)
+#define CSP_TASK_RETURN NULL
+
+#define csp_sleep_ms(time_ms) nanosleep(time_ms * 1000000);
+
+#endif // CSP_ECOS
+
 /* Windows interface */
 #if defined(CSP_WINDOWS)
 
