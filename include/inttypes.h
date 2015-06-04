@@ -7,7 +7,9 @@
 extern "C" {
 #endif
 
+#define PRIu8    "u"
 #define PRIu16   "u"
+#define PRIu32   "lu"
 
 #ifdef __cplusplus
 }

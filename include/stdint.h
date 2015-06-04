@@ -19,6 +19,12 @@ typedef cyg_uint32 uint32_t;
 typedef cyg_int64 int64_t;
 typedef cyg_uint64 uint64_t;
 
+typedef signed long intptr_t;
+typedef unsigned long uintptr_t;
+
+#define INT32_MAX    0x7fffffffL
+#define UINT32_MAX   0xffffffffL
+
 #ifdef __cplusplus
 }
 #endif
