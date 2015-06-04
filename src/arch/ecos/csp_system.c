@@ -36,7 +36,7 @@ int csp_sys_tasklist(char * out) {
 
 int csp_sys_tasklist_size(void) {
   /* TODO: Fix size tasklist on eCos */
-	strcpy(out, "Tasklist size not available on ECOS");
+	//strcpy(out, "Tasklist size not available on ECOS");
 	return CSP_ERR_NONE;
 }
 
@@ -50,7 +50,7 @@ uint32_t csp_sys_memfree(void) {
 
 int csp_sys_reboot(void) {
   /* TODO: Fix reboot on eCos */
-	strcpy(out, "Reboot is not available on ECOS");
+	//strcpy(out, "Reboot is not available on ECOS");
 	return CSP_ERR_INVAL;
 }
 
