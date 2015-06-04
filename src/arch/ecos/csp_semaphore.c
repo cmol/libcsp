@@ -41,7 +41,8 @@ int csp_mutex_create(csp_mutex_t * mutex) {
 }
 
 int csp_mutex_remove(csp_mutex_t * mutex) {
-	return cyg_semaphore_destroy(mutex);
+	cyg_semaphore_destroy(mutex);
+  return CSP_SEMAPHORE_OK;
 }
 
 int csp_mutex_lock(csp_mutex_t * mutex, uint32_t timeout) {
@@ -54,7 +55,7 @@ int csp_mutex_unlock(csp_mutex_t * mutex) {
 
 int csp_bin_sem_create(csp_bin_sem_handle_t * sem) {
 	csp_log_lock("Semaphore init: %p", sem);
-	cyg_semaphore_init(sem, 1)
+	cyg_semaphore_init(sem, 1);
 	return CSP_SEMAPHORE_OK;
 }
 
