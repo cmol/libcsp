@@ -91,6 +91,21 @@ typedef xSemaphoreHandle csp_mutex_t;
 
 #endif // CSP_FREERTOS
 
+/* eCos interface */
+#if defined(CSP_ECOS)
+
+#include <cyg/kernel/kapi.h>
+
+#define CSP_SEMAPHORE_OK 	1
+#define CSP_SEMAPHORE_ERROR	2
+#define CSP_MUTEX_OK		CSP_SEMAPHORE_OK
+#define CSP_MUTEX_ERROR		CSP_SEMAPHORE_ERROR
+
+typedef cyg_sem_t csp_bin_sem_handle_t;
+typedef cyg_sem_t csp_mutex_t;
+
+#endif // CSP_ECOS
+
 int csp_mutex_create(csp_mutex_t * mutex);
 int csp_mutex_remove(csp_mutex_t * mutex);
 int csp_mutex_lock(csp_mutex_t * mutex, uint32_t timeout);
