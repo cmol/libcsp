@@ -113,7 +113,8 @@ def configure(ctx):
 		ctx.env.FEATURES += ['cstlib']
 
 	# TODO: Quick fix for path, make an option instead
-	ecos_install_dir = '/home/cmol/DTU/34299-Fagprojekt/eCos_synth_with_exts_install'
+	#ecos_install_dir = '/home/cmol/DTU/34299-Fagprojekt/eCos_synth_with_exts_install'
+	ecos_install_dir = '/home/cmol/src/ecos_install'
 
 	# Setup CFLAGS
 	if (len(ctx.env.CFLAGS) == 0):
