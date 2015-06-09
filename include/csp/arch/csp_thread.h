@@ -55,7 +55,7 @@ typedef void * csp_thread_return_t;
 #define csp_thread_exit() pthread_exit(NULL)
 
 typedef cyg_handle_t csp_thread_handle_t;
-typedef void * csp_thread_return_t;
+typedef cyg_thread_entry * csp_thread_return_t;
 
 #define CSP_DEFINE_TASK(task_name) csp_thread_return_t task_name(void * param)
 #define CSP_TASK_RETURN NULL
