@@ -79,6 +79,7 @@ def options(ctx):
 	gr.add_option('--with-rtable', metavar='TABLE', default='static', help='Set routing table type')
 	gr.add_option('--with-transaction-so', metavar='CSP_SO', type=int, default='0x0000', help='Set outgoing csp_transaction socket options, see csp.h for valid values')
 	gr.add_option('--with-bufalign', metavar='BYTES', type=int, help='Set buffer alignment')
+	gr.add_option('--with-ecos-tick-ms', metavar='SIZE', type=int, default=None, help='Set tick length for eCos in ms')
 
 def configure(ctx):
 	# Validate OS
@@ -141,11 +142,13 @@ def configure(ctx):
 	# Add eCos
 	elif ctx.options.with_os == 'ecos':
 		if ctx.options.with_ecos == None:
-			print "You need to specify --with-ecos=/path/to/ecos/install"
-			exit(1)
+			ctx.fatal("You need to specify --with-ecos=/path/to/ecos/install")
+		if ctx.options.with_ecos_tick_ms == None:
+			ctx.fatal("You need to specify --with-ecos-tick-ms=[tick_time_in_ms]")
 		ctx.env.append_unique('INCLUDES_CSP', ctx.options.with_ecos+'/include')
 		ctx.env.append_unique('INCLUDES_CSP', 'include/ecos')
 		ctx.env.prepend_value('LDFLAGS', ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static,','-nostartfiles', '-L', ctx.options.with_ecos+'/lib', '-T', 'target.ld'])
+		ctx.define('CSP_ECOS_TICK_MS', ctx.options.with_ecos_tick_ms)
 	# Add Windows
 	elif ctx.options.with_os == 'windows':
 		ctx.env.append_unique('CFLAGS', ['-D_WIN32_WINNT=0x0600'])

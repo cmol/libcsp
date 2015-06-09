@@ -77,8 +77,7 @@ int cyg_queue_enqueue(cyg_queue_t * queue, void * value, uint32_t timeout) {
 	cyg_bool_t ret;
 
 	/* Calculate timeout */
-  // TODO: Again, set tick time on compile, not as magic 10ms
-  uint32_t wait_time = cyg_current_time() + timeout / 10;
+  uint32_t wait_time = cyg_current_time() + timeout / CSP_ECOS_TICK_MS;
 
 	/* Get queue lock */
 	cyg_mutex_lock(&(queue->mutex));
@@ -108,8 +107,7 @@ int cyg_queue_dequeue(cyg_queue_t * queue, void * buf, uint32_t timeout) {
 	cyg_bool_t ret;
 	
 	/* Calculate timeout */
-  // TODO: Again, set tick time on compile, not as magic 10ms
-  uint32_t wait_time = cyg_current_time() + timeout / 10;
+  uint32_t wait_time = cyg_current_time() + timeout / CSP_ECOS_TICK_MS;
 	
 	/* Get queue lock */
 	cyg_mutex_lock(&(queue->mutex));

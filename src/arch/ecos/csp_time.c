@@ -26,10 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include <csp/arch/csp_time.h>
 
 uint32_t csp_get_ms(void) {
-  // TODO: As eCos does not return any frequency data we only have ticks.
-  //       Right now we'll use 10ms as a tick time, however this should be
-  //       done compile time.
-	return ((uint32_t)cyg_current_time()) * 10;
+	return ((uint32_t)cyg_current_time()) * CSP_ECOS_TICK_MS;
 }
 
 uint32_t csp_get_ms_isr(void) {
