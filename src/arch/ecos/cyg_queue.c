@@ -83,7 +83,7 @@ int cyg_queue_enqueue(cyg_queue_t * queue, void * value, uint32_t timeout) {
 	/* Get queue lock */
 	cyg_mutex_lock(&(queue->mutex));
 	while (queue->items == queue->size) {
-		ret = cyg_cond_timedwait(&(queue->cond_full), wait_time);
+		ret = cyg_cond_timed_wait(&(queue->cond_full), wait_time);
 		if (!ret) {
 			cyg_mutex_unlock(&(queue->mutex));
 			return CYG_QUEUE_FULL;
@@ -114,7 +114,7 @@ int cyg_queue_dequeue(cyg_queue_t * queue, void * buf, uint32_t timeout) {
 	/* Get queue lock */
 	cyg_mutex_lock(&(queue->mutex));
 	while (queue->items == 0) {
-		ret = cyg_cond_timedwait(&(queue->cond_empty), wait_time);
+		ret = cyg_cond_timed_wait(&(queue->cond_empty), wait_time);
 		if (!ret) {
 			cyg_mutex_unlock(&(queue->mutex));
 			return CYG_QUEUE_EMPTY;
