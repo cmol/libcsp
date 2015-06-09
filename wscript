@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+# vim: set noexpandtab:shiftwidth=2:tabstop=2:softtabstop=2
 
 # Cubesat Space Protocol - A small network-layer protocol designed for Cubesats
 # Copyright (C) 2012 GomSpace ApS (http://www.gomspace.com)
@@ -65,6 +66,7 @@ def options(ctx):
 	# OS	
 	gr.add_option('--with-os', metavar='OS', default='posix', help='Set operating system. Must be either \'posix\', \'macosx\', \'windows\' or \'freertos\'')
 	gr.add_option('--with-freertos', metavar='PATH', default=None, help='Set path to FreeRTOS header files')
+	gr.add_option('--with-ecos', metavar='PATH', default=None, help='Set path to eCos header files')
 
 	# Options
 	gr.add_option('--with-rdp-max-window', metavar='SIZE', type=int, default=20, help='Set maximum window size for RDP')
@@ -112,20 +114,9 @@ def configure(ctx):
 	if not ctx.options.disable_stlib:
 		ctx.env.FEATURES += ['cstlib']
 
-	# TODO: Quick fix for path, make an option instead
-	#ecos_install_dir = '/home/cmol/DTU/34299-Fagprojekt/eCos_synth_with_exts_install'
-	ecos_install_dir = '/home/cmol/src/ecos_install'
-
 	# Setup CFLAGS
 	if (len(ctx.env.CFLAGS) == 0):
-		if(ctx.options.with_os == 'ecos'):
-			ctx.env.prepend_value('CFLAGS', ['-Os','-Wall','-Wpointer-arith', '-Wstrict-prototypes', '-Wundef', '-Wno-write-strings', '-ffunction-sections' ,'-g', '-std=gnu99','-I', ecos_install_dir+'/include'])
-		else:
-			ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g', '-std=gnu99'])
-
-	# Setup LDFLAGS
-	if (len(ctx.env.LDFLAGS) == 0 and ctx.options.with_os == 'ecos'):
-		ctx.env.prepend_value('LDFLAGS', ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static,','-nostartfiles', '-L', ecos_install_dir+'/lib', '-T', 'target.ld'])
+		ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g', '-std=gnu99'])
 
 	# Setup extra includes
 	ctx.env.append_unique('INCLUDES_CSP', ['include'] + ctx.options.includes.split(','))
@@ -147,6 +138,15 @@ def configure(ctx):
 	if ctx.options.with_os == 'freertos':
 		if ctx.options.with_freertos:
 			ctx.env.append_unique('INCLUDES_CSP', ctx.options.with_freertos)
+	# Add eCos
+	elif ctx.options.with_os == 'ecos':
+		if ctx.options.with_ecos == None:
+			print "You need to specify --with-ecos=/path/to/ecos/install"
+			exit(1)
+		ctx.env.append_unique('INCLUDES_CSP', ctx.options.with_ecos+'/include')
+		ctx.env.append_unique('INCLUDES_CSP', 'include/ecos')
+		ctx.env.prepend_value('LDFLAGS', ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static,','-nostartfiles', '-L', ctx.options.with_ecos+'/lib', '-T', 'target.ld'])
+	# Add Windows
 	elif ctx.options.with_os == 'windows':
 		ctx.env.append_unique('CFLAGS', ['-D_WIN32_WINNT=0x0600'])
 
