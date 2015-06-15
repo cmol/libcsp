@@ -264,6 +264,10 @@ def build(ctx):
 		ctx.install_files('${PREFIX}/include/csp', ctx.path.ant_glob('include/csp/*.h'))
 		ctx.install_files('${PREFIX}/include/csp/interfaces', 'include/csp/interfaces/csp_if_lo.h')
 
+		# Add custom eCos headers
+		if ctx.options.with_os == 'ecos':
+			ctx.install_files('${PREFIX}/include', ctx.path.ant_glob('include/ecos/*.h'))
+
 		if 'src/interfaces/csp_if_can.c' in ctx.env.FILES_CSP:
 			ctx.install_files('${PREFIX}/include/csp/interfaces', 'include/csp/interfaces/csp_if_can.h')
 		if 'src/interfaces/csp_if_i2c.c' in ctx.env.FILES_CSP:
