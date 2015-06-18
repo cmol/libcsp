@@ -72,8 +72,7 @@ int csp_bin_sem_wait(csp_bin_sem_handle_t * sem, uint32_t timeout) {
 	if (timeout == CSP_MAX_DELAY) {
     ret = cyg_semaphore_wait(sem);
   } else {
-  // TODO: do not use a magic number for tick time (10ms)
-		timeout = cyg_current_time() + timeout / 10;
+		timeout = cyg_current_time() + timeout / CSP_ECOS_TICK_MS;
     ret = cyg_semaphore_timed_wait(sem, timeout);
   }
 
