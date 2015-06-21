@@ -147,7 +147,7 @@ def configure(ctx):
 			ctx.fatal("You need to specify --with-ecos-tick-ms=[tick_time_in_ms]")
 		ctx.env.append_unique('INCLUDES_CSP', ctx.options.with_ecos+'/include')
 		ctx.env.append_unique('INCLUDES_CSP', 'include/ecos')
-		ctx.env.prepend_value('LDFLAGS', ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static,','-nostartfiles', '-L', ctx.options.with_ecos+'/lib', '-T', 'target.ld'])
+		ctx.env.prepend_value('LDFLAGS', ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static','-nostartfiles', '-L', ctx.options.with_ecos+'/lib', '-T', 'target.ld'])
 		ctx.define('CSP_ECOS_TICK_MS', ctx.options.with_ecos_tick_ms)
 	# Add Windows
 	elif ctx.options.with_os == 'windows':
@@ -304,7 +304,8 @@ def build(ctx):
 			target = 'simple',
 			includes = ctx.env.INCLUDES_CSP,
 			lib = ctx.env.LIBS,
-			use = 'csp')
+			use = 'csp',
+			linkflags = ctx.env.LDFLAGS)
 
 		if ctx.options.enable_if_kiss:
 			ctx.program(source = 'examples/kiss.c',
