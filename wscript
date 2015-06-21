@@ -126,9 +126,9 @@ def configure(ctx):
 	ctx.env.append_unique('FILES_CSP', ['src/*.c','src/interfaces/csp_if_lo.c','src/transport/csp_udp.c','src/arch/{0}/**/*.c'.format(ctx.options.with_os)])
 	
 	# Libs
-	if 'posix' in ctx.env.OS:
+	if ctx.options.with_os == 'posix':
 		ctx.env.append_unique('LIBS', ['rt', 'pthread', 'util'])
-	elif 'macosx' in ctx.env.OS:
+	elif ctx.options.with_os == 'macosx':
 		ctx.env.append_unique('LIBS', ['pthread'])
 
 	# Check for recursion
@@ -310,14 +310,14 @@ def build(ctx):
 			ctx.program(source = 'examples/kiss.c',
 				target = 'kiss',
 				includes = ctx.env.INCLUDES_CSP,
-				lib = libs,
+				lib = ctx.env.LIBS,
 				use = 'csp')
 
 		if 'posix' in ctx.env.OS:
 			ctx.program(source = 'examples/csp_if_fifo.c',
 				target = 'fifo',
 				includes = ctx.env.INCLUDES_CSP,
-				lib = libs,
+				lib = ctx.env.LIBS,
 				use = 'csp')
 
 		if 'windows' in ctx.env.OS:
