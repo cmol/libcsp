@@ -60,7 +60,7 @@ typedef cyg_thread_entry * csp_thread_return_t;
 #define CSP_DEFINE_TASK(task_name) csp_thread_return_t task_name(void * param)
 #define CSP_TASK_RETURN NULL
 
-#define csp_sleep_ms(time_ms) nanosleep(time_ms * 1000000);
+#define csp_sleep_ms(time_ms) cyg_thread_delay(time_ms / CSP_ECOS_TICK_MS);
 
 #endif // CSP_ECOS
 
