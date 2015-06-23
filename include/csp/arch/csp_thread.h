@@ -52,7 +52,7 @@ typedef void * csp_thread_return_t;
 #include <cyg/kernel/kapi.h>
 #include <unistd.h>
 
-#define csp_thread_exit() pthread_exit(NULL)
+#define csp_thread_exit() cyg_thread_exit(NULL)
 
 typedef cyg_handle_t csp_thread_handle_t;
 typedef cyg_thread_entry * csp_thread_return_t;
