@@ -37,6 +37,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define CSP_RPS_MTU	196
 
+#if defined(CSP_ECOS)
+int strnlen(const char *s, int maxlen) {
+  int len = strlen(s);
+  return len <= maxlen ? len : maxlen;
+}
+#endif
+
 /**
  * The CSP CMP mempy function is used to, override the function used to
  * read/write memory by peek and poke.
