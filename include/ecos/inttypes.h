@@ -1,7 +1,5 @@
 #ifndef CYGONCE_INTTYPES_H
 #define CYGONCE_INTTYPES_H
-#include <cyg/infra/cyg_type.h>
-
 
 #ifdef __cplusplus
 extern "C" {
