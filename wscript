@@ -117,7 +117,10 @@ def configure(ctx):
 
 	# Setup CFLAGS
 	if (len(ctx.env.CFLAGS) == 0):
-		ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g', '-std=gnu99'])
+		if ctx.options.with_os == 'ecos':
+			ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g'])
+		else:
+			ctx.env.prepend_value('CFLAGS', ['-Os','-Wall', '-g', '-std=gnu99'])
 
 	# Setup extra includes
 	ctx.env.append_unique('INCLUDES_CSP', ['include'] + ctx.options.includes.split(','))
@@ -147,7 +150,6 @@ def configure(ctx):
 			ctx.fatal("You need to specify --with-ecos-tick-ms=[tick_time_in_ms]")
 		ctx.env.append_unique('INCLUDES_CSP', ctx.options.with_ecos+'/include')
 		ctx.env.append_unique('INCLUDES_CSP', 'include/ecos')
-		ctx.env.prepend_value('LDFLAGS', ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static','-nostartfiles', '-L', ctx.options.with_ecos+'/lib', '-T', 'target.ld'])
 		ctx.define('CSP_ECOS_TICK_MS', ctx.options.with_ecos_tick_ms)
 	# Add Windows
 	elif ctx.options.with_os == 'windows':
@@ -300,12 +302,17 @@ def build(ctx):
 			lib=ctx.env.LIBS)
 
 	if ctx.env.ENABLE_EXAMPLES:
+		# Setup linker flags for eCos
+		ld_flags = []
+		if 'ecos' in ctx.env.OS:
+			ld_flags = ['-g', '-nostdlib', '-Wl,--gc-sections', '-Wl,-static','-nostartfiles', '-L', ctx.options.with_ecos+'/lib', '-T', 'target.ld']
+
 		ctx.program(source = ctx.path.ant_glob('examples/simple.c'),
 			target = 'simple',
 			includes = ctx.env.INCLUDES_CSP,
 			lib = ctx.env.LIBS,
 			use = 'csp',
-			linkflags = ctx.env.LDFLAGS)
+			linkflags = ld_flags)
 
 		if ctx.options.enable_if_kiss:
 			ctx.program(source = 'examples/kiss.c',
